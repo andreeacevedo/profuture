@@ -2,7 +2,7 @@
 include 'conexion.php';
 
 if (isset($_GET["universidad_id"])) {
-    $universidad_id = intval($_GET["universidad_id"]); // Asegurar que sea un número entero
+    $universidad_id = intval($_GET["universidad_id"]); 
 
     $sql = "SELECT uc.id, cg.nombre 
             FROM universidad_carrera uc

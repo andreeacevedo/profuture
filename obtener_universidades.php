@@ -1,5 +1,5 @@
 <?php
-include 'conexion.php'; // Asegura la conexión a MySQL
+include 'conexion.php';
 
 $sql = "SELECT id, nombre FROM universidades ORDER BY nombre ASC";
 $result = $conn->query($sql);
@@ -14,5 +14,5 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 
-echo json_encode($universidades); // Devuelve los datos en formato JSON
+echo json_encode($universidades);
 ?>

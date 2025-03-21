@@ -33,9 +33,7 @@ if (empty($materias)) {
 
 $cursos = [];
 
-// ===================================
-// 🔹 1. Coursera (API real)
-// ===================================
+//coursera//
 foreach ($materias as $materia) {
     $materia_encoded = urlencode($materia);
     $url = "https://api.coursera.org/api/courses.v1?q=search&query=$materia_encoded";
@@ -63,9 +61,8 @@ foreach ($materias as $materia) {
     }
 }
 
-// ===================================
-// 🔹 2. freeCodeCamp (sin duplicados)
-// ===================================
+//freeCode//
+
 $mapaFreeCodeCamp = [
     "javascript" => "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/",
     "python" => "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
@@ -90,9 +87,7 @@ foreach ($materias as $materia) {
     }
 }
 
-// ===================================
-// 🔹 3. Khan Academy (sin duplicados)
-// ===================================
+//Khan Academy//
 $mapaKhan = [
     "matemáticas" => "https://es.khanacademy.org/math",
     "ciencias" => "https://es.khanacademy.org/science",

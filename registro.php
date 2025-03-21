@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST["nombre"];
     $email = $_POST["email"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    $universidad_id = $_POST["universidad"]; // Capturar la universidad seleccionada
+    $universidad_id = $_POST["universidad"];
 
     $sql = "INSERT INTO usuarios (nombre, email, password, universidad_id) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -15,9 +15,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sssi", $nombre, $email, $password, $universidad_id);
 
         if ($stmt->execute()) {
-            $_SESSION["usuario"] = $nombre; // Guarda el usuario en la sesión
-            $_SESSION["id_usuario"] = $stmt->insert_id; // Guarda el ID del nuevo usuario en la sesión
-            header("Location: inicio.php"); // 🔹 Redirigir automáticamente a inicio.php
+            $_SESSION["usuario"] = $nombre; 
+            $_SESSION["id_usuario"] = $stmt->insert_id;
+            header("Location: inicio.php"); 
             exit();
         } else {
             echo "Error al registrar usuario: " . $stmt->error;

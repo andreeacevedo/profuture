@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'conexion.php'; // Conexión con MySQL
+include 'conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
@@ -17,11 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->fetch();
 
         if (password_verify($password, $hashed_password)) {
-            // 🔹 Guardamos el ID y el nombre en la sesión con nombres consistentes
-            $_SESSION["usuario_id"] = $id; // ID del usuario
-            $_SESSION["usuario"] = $nombre; // Nombre del usuario
+            $_SESSION["usuario_id"] = $id; 
+            $_SESSION["usuario"] = $nombre;
 
-            header("Location: inicio.php"); // Redirigir al dashboard después de iniciar sesión
+            header("Location: inicio.php"); 
             exit();
         } else {
             echo "Contraseña incorrecta.";
