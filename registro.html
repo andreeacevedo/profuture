@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/book.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Montserrat:wght@300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <title>ProFuture</title>
+</head>
+
+<body>
+    <!--Header - Menu-->
+    <header>
+        <div class="container">
+            <p class="logo">ProFuture</p>
+            <nav>
+                <a href="index.php">Inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <!--Inicio - Portada-->
+    <main>
+        <div class="container__cover">
+            <div class="cover">
+                <section class="image__cover">
+                    <img src="assets/images/coverBook.png" alt="books">
+                </section>
+                <section class="text__cover">
+                    <div class="contenedor__todo">
+                        <div class="contenedor__login-register">
+                            <form action="registro.php" class="formulario__register" method="POST">
+                                <h2>Registrate</h2>
+                                <input type="text" name="nombre" placeholder="Nombre Completo" required>
+                                <input type="email" name="email" placeholder="Correo Electrónico" required>
+                                <input type="password" name="password" placeholder="Contraseña" required>
+
+                                <select name="universidad" id="universidad" class="select-universidad" required>
+                                    <option value="">Selecciona tu Universidad</option>
+                                </select>
+
+                                <select name="carrera" id="carrera" class="select-universidad" required>
+                                    <option value="">Selecciona tu Carrera</option>
+                                </select>
+
+                                <div id="descripcion_carrera"></div>
+
+                                <button type="submit">Registrate</button>
+                            </form>
+
+                            <!-- Script para cargar universidades -->
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    const selectUniversidad = document.getElementById("universidad");
+                                    const selectCarrera = document.getElementById("carrera");
+                            
+                                    // Cargar universidades al cargar la página
+                                    fetch("obtener_universidades.php")
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            data.forEach(universidad => {
+                                                let option = document.createElement("option");
+                                                option.value = universidad.id;
+                                                option.textContent = universidad.nombre;
+                                                selectUniversidad.appendChild(option);
+                                            });
+                                        })
+                                        .catch(error => console.error("Error cargando universidades:", error));
+                            
+                                    // Cargar carreras cuando se seleccione una universidad
+                                    selectUniversidad.addEventListener("change", function () {
+                                        const universidadId = this.value;
+                                        selectCarrera.innerHTML = '<option value="">Selecciona tu Carrera</option>'; // Resetear opciones
+                            
+                                        if (universidadId) {
+                                            fetch(`obtener_carreras.php?universidad_id=${universidadId}`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.length === 0) {
+                                                        selectCarrera.innerHTML = '<option value="">No hay carreras disponibles</option>';
+                                                    } else {
+                                                        data.forEach(carrera => {
+                                                            let option = document.createElement("option");
+                                                            option.value = carrera.id;
+                                                            option.textContent = carrera.nombre;
+                                                            selectCarrera.appendChild(option);
+                                                        });
+                                                    }
+                                                })
+                                                .catch(error => console.error("Error cargando carreras:", error));
+                                        }
+                                    });
+                                });
+                            </script>
+                            
+                        </div>
+                        <div class="caja__atras">
+                            <div class="caja__atras-login">
+                                <h3>¿Ya tienes cuenta?</h3>
+                                <p>Inicia sesión para ingresar</p>
+                                <a href="inicio-sesion.html">Inicia Sesión</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
