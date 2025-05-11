@@ -2,7 +2,6 @@
 session_start();
 include 'conexion.php';
 
-// Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["usuario_id"])) {
     echo json_encode(["error" => "Debes iniciar sesión"]);
     exit();
@@ -10,7 +9,6 @@ if (!isset($_SESSION["usuario_id"])) {
 
 $usuario_id = $_SESSION["usuario_id"];
 
-// Obtener materias del usuario desde la base de datos
 $sql = "SELECT m.nombre FROM usuario_materias um 
         JOIN materias m ON um.materia_id = m.id 
         WHERE um.usuario_id = ?";
@@ -33,7 +31,7 @@ if (empty($materias)) {
 
 $cursos = [];
 
-//coursera//
+// 🔹 Coursera
 foreach ($materias as $materia) {
     $materia_encoded = urlencode($materia);
     $url = "https://api.coursera.org/api/courses.v1?q=search&query=$materia_encoded";
@@ -61,33 +59,7 @@ foreach ($materias as $materia) {
     }
 }
 
-//freeCode//
-
-$mapaFreeCodeCamp = [
-    "javascript" => "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/",
-    "python" => "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
-    "html" => "https://www.freecodecamp.org/learn/responsive-web-design/",
-    "css" => "https://www.freecodecamp.org/learn/responsive-web-design/"
-];
-
-$agregadosFCC = [];
-
-foreach ($materias as $materia) {
-    foreach ($mapaFreeCodeCamp as $clave => $url) {
-        if (stripos($materia, $clave) !== false && !in_array($clave, $agregadosFCC)) {
-            $cursos[] = [
-                "nombre" => "Certificación en " . ucfirst($clave),
-                "descripcion" => "Curso gratuito en freeCodeCamp",
-                "url" => $url,
-                "plataforma" => "freeCodeCamp"
-            ];
-            $agregadosFCC[] = $clave;
-            break;
-        }
-    }
-}
-
-//Khan Academy//
+// 🔹 Khan Academy
 $mapaKhan = [
     "matemáticas" => "https://es.khanacademy.org/math",
     "ciencias" => "https://es.khanacademy.org/science",
@@ -112,9 +84,7 @@ foreach ($materias as $materia) {
     }
 }
 
-// ===================================
-// 🔹 4. Codecademy (sin duplicados)
-// ===================================
+// 🔹 Codecademy
 $mapaCodecademy = [
     "javascript" => "https://www.codecademy.com/learn/introduction-to-javascript",
     "python" => "https://www.codecademy.com/learn/learn-python-3",
@@ -139,8 +109,40 @@ foreach ($materias as $materia) {
     }
 }
 
-// ===================================
-// 🔚 Retornar los cursos en JSON
-// ===================================
+// 🔹 Udemy Paid Courses for Free (RapidAPI)
+foreach ($materias as $materia) {
+    $query = urlencode($materia);
+    $url = "https://udemy-paid-courses-for-free-api.p.rapidapi.com/api/udemy";
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url . "?search=$query",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "X-RapidAPI-Key: bae94c5651msh7810d674e074304p164dabjsn3410759e2cbc",
+            "X-RapidAPI-Host: udemy-paid-courses-for-free-api.p.rapidapi.com"
+        ]
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $data = json_decode($response, true);
+    $count = 0;
+
+    if (isset($data["courses"])) {
+        foreach ($data["courses"] as $curso) {
+            if ($count >= 3) break;
+            $cursos[] = [
+                "nombre" => $curso["title"],
+                "descripcion" => $curso["description"],
+                "url" => $curso["url"],
+                "plataforma" => "Udemy",
+                "imagen" => $curso["image"]
+            ];
+            $count++;
+        }
+    }
+}
+
 echo json_encode($cursos);
 ?>

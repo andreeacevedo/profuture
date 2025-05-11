@@ -59,7 +59,6 @@
                                     const selectUniversidad = document.getElementById("universidad");
                                     const selectCarrera = document.getElementById("carrera");
                             
-                                    // Cargar universidades al cargar la página
                                     fetch("obtener_universidades.php")
                                         .then(response => response.json())
                                         .then(data => {

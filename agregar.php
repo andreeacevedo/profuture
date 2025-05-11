@@ -3,11 +3,11 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["usuario"])) {
-    header("Location: inicio-sesion.html"); // Si no ha iniciado sesión, redirigirlo al login
+    header("Location: inicio-sesion.html");
     exit();
 }
 
-$usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variable
+$usuario = $_SESSION["usuario"];
 ?>
 
 <!DOCTYPE html>
@@ -33,8 +33,8 @@ $usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variabl
             <nav>
                 <a href="Inicio.php">Inicio</a>
                 <a href="agregar.php">Agregar</a>
-                <a href="#">Pensum</a>
-                <a href="#">Perfil</a>
+                <!--<a href="#">Pensum</a>-->
+                <a href="perfil.php">Perfil</a>
                 <span class="user-welcome">Hola, <strong><?php echo $usuario; ?></strong></span>
                 <a href="logout.php" class="logout-btn">Cerrar Sesión</a>
             </nav>
@@ -55,10 +55,10 @@ $usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variabl
                 <option value="">Selecciona tu Carrera</option>
             </select>
 
-            <!-- Seleccionar Materias -->
+            <!-- Materias -->
             <div id="materias-container">
                 <h3>Materias Disponibles:</h3>
-                <div id="materias-list"></div>
+                <div id="materias-list" class="materia-container"></div>
             </div>
 
             <button class="btn__crearCuenta" id="guardarMaterias">Guardar Selección</button>
@@ -84,10 +84,11 @@ $usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variabl
                     });
                 });
 
-            // Cargar carreras cuando se seleccione una universidad
+            // Cargar carreras al seleccionar universidad
             selectUniversidad.addEventListener("change", function () {
                 const universidadId = this.value;
                 selectCarrera.innerHTML = '<option value="">Selecciona tu Carrera</option>';
+                materiasList.innerHTML = "";
 
                 if (universidadId) {
                     fetch(`obtener_carreras.php?universidad_id=${universidadId}`)
@@ -103,10 +104,10 @@ $usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variabl
                 }
             });
 
-            // Cargar materias cuando se seleccione una carrera
+            // Cargar materias al seleccionar carrera
             selectCarrera.addEventListener("change", function () {
                 const carreraId = this.value;
-                materiasList.innerHTML = ""; // Limpiar materias
+                materiasList.innerHTML = "";
 
                 if (carreraId) {
                     fetch(`obtener_materias.php?carrera_id=${carreraId}`)
@@ -114,9 +115,12 @@ $usuario = $_SESSION["usuario"]; // Guardar el nombre del usuario en una variabl
                         .then(data => {
                             data.forEach(materia => {
                                 let div = document.createElement("div");
+                                div.classList.add("materia-box");
+                                div.setAttribute("data-ciclo", materia.ciclo);
                                 div.innerHTML = `
-                                    <input type="checkbox" name="materias" value="${materia.id}">
-                                    ${materia.nombre} (Ciclo ${materia.ciclo})
+                                    <input type="checkbox" name="materias" value="${materia.id}" style="margin-bottom: 10px;">
+                                    <div class="nombre">${materia.nombre}</div>
+                                    <div class="ciclo">Ciclo ${materia.ciclo}</div>
                                 `;
                                 materiasList.appendChild(div);
                             });
